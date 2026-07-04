@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wave BD Course Portal</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+  body {
+    background: #0f0f1a;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
+  .card {
+    background: #1a1a2e;
+    border-radius: 16px;
+    padding: 30px 24px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+  }
+  h1 {
+    font-size: 24px;
+    margin-bottom: 8px;
+  }
+  .subtitle {
+    color: #a0a0c0;
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+  .btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: #6c5ce7;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 12px;
+    cursor: pointer;
+  }
+  .status {
+    margin-top: 20px;
+    font-size: 13px;
+    color: #a0a0c0;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h1>Wave BD Course</h1>
+  <p class="subtitle">ফেসবুক মার্কেটিং ও ইউটিউব ভিডিও তৈরির কোর্স</p>
+  
+  <button class="btn" onclick="enrollNow()">Enroll Now — কোর্সে ভর্তি হন</button>
+  
+  <p class="status" id="statusText">পেইজ সফলভাবে লোড হয়েছে ✅</p>
+</div>
+
+<script>
+  const tg = window.Telegram.WebApp;
+  tg.ready();
+  tg.expand();
+
+  function enrollNow() {
+    document.getElementById('statusText').innerText = 'পরবর্তী ধাপ শীঘ্রই যুক্ত হবে...';
+  }
+</script>
+
+</body>
+</html>
