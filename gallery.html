@@ -5,88 +5,88 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ফ্রি ভিডিও গ্যালারি</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyBL1UNjemUQERSmF_G8_nmxjNnUYQqKPsU",
-    authDomain: "freemathod-fb-yt-service-bd.firebaseapp.com",
-    projectId: "freemathod-fb-yt-service-bd",
-    storageBucket: "freemathod-fb-yt-service-bd.firebasestorage.app",
-    messagingSenderId: "1029948659030",
-    appId: "1:1029948659030:web:bd901848b2593add4272f7"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  const DELIVERY_BOT_USERNAME = "@freemethodvideodelivery_bot"; // তোমার দ্বিতীয় বটের ইউজারনেম
-
-  async function loadVideos() {
-    const container = document.getElementById('gallery');
-    const querySnapshot = await getDocs(collection(db, "free_videos"));
-
-    if (querySnapshot.empty) {
-      container.innerHTML = '<p class="empty">এখনো কোনো ভিডিও যোগ করা হয়নি।</p>';
-      return;
-    }
-
-    let html = '';
-    querySnapshot.forEach((doc) => {
-      const data = doc.data();
-      html += `
-        <div class="video-card">
-          <img src="${data.thumbnail_url}" alt="${data.title}" />
-          <h3>${data.title}</h3>
-          <button class="download-btn" onclick="window.Telegram.WebApp.openTelegramLink('https://t.me/${DELIVERY_BOT_USERNAME}?start=${data.video_code}')">
-            ⬇ Download
-          </button>
-        </div>
-      `;
-    });
-    container.innerHTML = html;
-  }
-
-  window.onload = loadVideos;
-</script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-  body {
-    background: #0f0f1a;
-    color: white;
-    padding: 16px;
-  }
-  h1 {
-    font-size: 20px;
-    margin-bottom: 16px;
-    text-align: center;
-  }
-  .video-card {
-    background: #1a1a2e;
-    border-radius: 12px;
-    overflow: hidden;
-    margin-bottom: 16px;
-  }
-  .video-card img {
-    width: 100%;
+  body { background: #0f0f1a; color: white; padding: 16px; }
+  h1 { font-size: 20px; margin-bottom: 16px; text-align: center; }
+  .video-card { background: #1a1a2e; border-radius: 12px; overflow: hidden; margin-bottom: 16px; }
+  .video-card img { width: 100%; display: block; pointer-events: none; }
+  .video-card h3 { padding: 12px; font-size: 15px; }
+  .download-btn {
     display: block;
-    pointer-events: none;
-  }
-  .video-card h3 {
-    padding: 12px;
-    font-size: 15px;
-  }
-  ..download-btn { display: block; width: 100%; text-align: center; background: #6c5ce7; color: white; text-decoration: none; padding: 12px; font-weight: bold; border: none; border-radius: 0; font-size: 15px; cursor: pointer; }
-  .empty {
+    width: 100%;
     text-align: center;
-    color: #a0a0c0;
-    margin-top: 40px;
+    background: #6c5ce7;
+    color: white;
+    text-decoration: none;
+    padding: 12px;
+    font-weight: bold;
+    border: none;
+    font-size: 15px;
+    cursor: pointer;
   }
+  .empty { text-align: center; color: #a0a0c0; margin-top: 40px; }
 </style>
 </head>
 <body>
   <h1>🎁 ফ্রি ভিডিও গ্যালারি</h1>
   <div id="gallery">লোড হচ্ছে...</div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBL1UNjemUQERSmF_G8_nmxjNnUYQqKPsU",
+      authDomain: "freemathod-fb-yt-service-bd.firebaseapp.com",
+      projectId: "freemathod-fb-yt-service-bd",
+      storageBucket: "freemathod-fb-yt-service-bd.firebasestorage.app",
+      messagingSenderId: "1029948659030",
+      appId: "1:1029948659030:web:bd901848b2593add4272f7"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const DELIVERY_BOT_USERNAME = "freemethodvideodelivery_bot";
+
+    function openDeliveryBot(videoCode) {
+      const link = "https://t.me/" + DELIVERY_BOT_USERNAME + "?start=" + videoCode;
+      if (window.Telegram && window.Telegram.WebApp) {
+        window.Telegram.WebApp.openTelegramLink(link);
+      } else {
+        window.open(link, "_blank");
+      }
+    }
+    window.openDeliveryBot = openDeliveryBot;
+
+    async function loadVideos() {
+      const container = document.getElementById('gallery');
+      const querySnapshot = await getDocs(collection(db, "free_videos"));
+
+      if (querySnapshot.empty) {
+        container.innerHTML = '<p class="empty">এখনো কোনো ভিডিও যোগ করা হয়নি।</p>';
+        return;
+      }
+
+      let html = '';
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        html += '<div class="video-card">' +
+                  '<img src="' + data.thumbnail_url + '" alt="' + data.title + '" />' +
+                  '<h3>' + data.title + '</h3>' +
+                  '<button class="download-btn" onclick="openDeliveryBot(\'' + data.video_code + '\')">⬇ Download</button>' +
+                '</div>';
+      });
+      container.innerHTML = html;
+    }
+
+    window.onload = loadVideos;
+
+    if (window.Telegram && window.Telegram.WebApp) {
+      window.Telegram.WebApp.ready();
+      window.Telegram.WebApp.expand();
+    }
+  </script>
 </body>
 </html>
