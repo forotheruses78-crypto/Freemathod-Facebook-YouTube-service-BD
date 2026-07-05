@@ -9,6 +9,32 @@
   * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
   body { background: #0f0f1a; color: white; padding: 16px; }
   h1 { font-size: 20px; margin-bottom: 16px; text-align: center; }
+  .tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 10px;
+    background: #1a1a2e;
+    color: #a0a0c0;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .tab-btn.active {
+    background: #6c5ce7;
+    color: white;
+  }
+  .segment-title {
+    font-size: 17px;
+    margin: 20px 0 10px 0;
+    padding-bottom: 6px;
+    border-bottom: 2px solid #6c5ce7;
+  }
   .video-card { background: #1a1a2e; border-radius: 12px; overflow: hidden; margin-bottom: 16px; }
   .video-card img { width: 100%; display: block; pointer-events: none; }
   .video-card h3 { padding: 12px; font-size: 15px; }
@@ -30,6 +56,13 @@
 </head>
 <body>
   <h1>🎁 ফ্রি ভিডিও গ্যালারি</h1>
+
+  <div class="tabs">
+    <button class="tab-btn active" id="tab-all" onclick="showTab('all')">সব</button>
+    <button class="tab-btn" id="tab-morning" onclick="showTab('morning')">☀️ সকাল</button>
+    <button class="tab-btn" id="tab-night" onclick="showTab('night')">🌙 রাত</button>
+  </div>
+
   <div id="gallery">লোড হচ্ছে...</div>
 
   <script type="module">
@@ -50,6 +83,11 @@
 
     const DELIVERY_BOT_USERNAME = "freemethodvideodelivery_bot";
 
+    let allVideos = [];
+    let morningVideos = [];
+    let nightVideos = [];
+    let currentTab = "all";
+
     function openDeliveryBot(videoCode) {
       const link = "https://t.me/" + DELIVERY_BOT_USERNAME + "?start=" + videoCode;
       if (window.Telegram && window.Telegram.WebApp) {
@@ -60,25 +98,69 @@
     }
     window.openDeliveryBot = openDeliveryBot;
 
-    async function loadVideos() {
+    function renderVideoCard(data) {
+      return '<div class="video-card">' +
+               '<img src="' + data.thumbnail_url + '" alt="' + data.title + '" />' +
+               '<h3>' + data.title + '</h3>' +
+               '<button class="download-btn" onclick="openDeliveryBot(\'' + data.video_code + '\')">⬇ Download</button>' +
+             '</div>';
+    }
+
+    function renderTab(tab) {
       const container = document.getElementById('gallery');
+      let html = '';
+
+      if (tab === 'all') {
+        if (morningVideos.length > 0) {
+          html += '<div class="segment-title">☀️ সকালের ভিডিও</div>';
+          morningVideos.forEach((data) => { html += renderVideoCard(data); });
+        }
+        if (nightVideos.length > 0) {
+          html += '<div class="segment-title">🌙 রাতের ভিডিও</div>';
+          nightVideos.forEach((data) => { html += renderVideoCard(data); });
+        }
+      } else if (tab === 'morning') {
+        morningVideos.forEach((data) => { html += renderVideoCard(data); });
+      } else if (tab === 'night') {
+        nightVideos.forEach((data) => { html += renderVideoCard(data); });
+      }
+
+      if (html === '') {
+        html = '<p class="empty">এই বিভাগে এখনো কোনো ভিডিও নেই।</p>';
+      }
+
+      container.innerHTML = html;
+    }
+
+    function showTab(tab) {
+      currentTab = tab;
+      document.getElementById('tab-all').classList.remove('active');
+      document.getElementById('tab-morning').classList.remove('active');
+      document.getElementById('tab-night').classList.remove('active');
+      document.getElementById('tab-' + tab).classList.add('active');
+      renderTab(tab);
+    }
+    window.showTab = showTab;
+
+    async function loadVideos() {
       const querySnapshot = await getDocs(collection(db, "free_videos"));
 
       if (querySnapshot.empty) {
-        container.innerHTML = '<p class="empty">এখনো কোনো ভিডিও যোগ করা হয়নি।</p>';
+        document.getElementById('gallery').innerHTML = '<p class="empty">এখনো কোনো ভিডিও যোগ করা হয়নি।</p>';
         return;
       }
 
-      let html = '';
       querySnapshot.forEach((doc) => {
         const data = doc.data();
-        html += '<div class="video-card">' +
-                  '<img src="' + data.thumbnail_url + '" alt="' + data.title + '" />' +
-                  '<h3>' + data.title + '</h3>' +
-                  '<button class="download-btn" onclick="openDeliveryBot(\'' + data.video_code + '\')">⬇ Download</button>' +
-                '</div>';
+        allVideos.push(data);
+        if (data.category === "night") {
+          nightVideos.push(data);
+        } else {
+          morningVideos.push(data);
+        }
       });
-      container.innerHTML = html;
+
+      renderTab(currentTab);
     }
 
     window.onload = loadVideos;
