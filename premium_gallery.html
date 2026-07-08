@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>প্রিমিয়াম ভিডিও গ্যালারি</title>
+<title>Premium Video Hub </title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
@@ -45,18 +45,18 @@
 </style>
 </head>
 <body>
-  <h1>📚 প্রিমিয়াম ভিডিও গ্যালারি</h1>
+  <h1>Premium <span>Video Hub</span></h1>
   <div id="subBadge"></div>
 
   <div class="tabs">
-    <button class="tab-btn active" id="tab-all" onclick="showTab('all')">সব</button>
-    <button class="tab-btn" id="tab-fb_video" onclick="showTab('fb_video')">ফেসবুক ভিডিও</button>
-    <button class="tab-btn" id="tab-yt_shorts" onclick="showTab('yt_shorts')">ইউটিউব শর্টস</button>
-    <button class="tab-btn" id="tab-yt_long" onclick="showTab('yt_long')">ইউটিউব লং</button>
-    <button class="tab-btn" id="tab-tutorial" onclick="showTab('tutorial')">টিউটোরিয়াল</button>
+    <button class="tab-btn active" id="tab-all" onclick="showTab('all')">All</button>
+    <button class="tab-btn" id="tab-fb_video" onclick="showTab('fb_video')">Facebook Video</button>
+    <button class="tab-btn" id="tab-yt_shorts" onclick="showTab('yt_shorts')">YouTube Shorts</button>
+    <button class="tab-btn" id="tab-yt_long" onclick="showTab('yt_long')">YouTube Long</button>
+    <button class="tab-btn" id="tab-tutorial" onclick="showTab('tutorial')">Tutorial</button>
   </div>
 
-  <div id="gallery">লোড হচ্ছে...</div>
+  <div id="gallery">Loading...</div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -90,7 +90,7 @@
     window.openDeliveryBot = openDeliveryBot;
 
     function renderVideoCard(data) {
-      const badgeText = data.time_label === "night" ? "🌙 রাত" : "☀️ দিন";
+      const badgeText = data.time_label === "night" ? "🌙 রাতের" : "☀️ দিনের";
       return '<div class="video-card">' +
                '<div class="thumb-wrap">' +
                  '<img src="' + data.thumbnail_url + '" alt="' + data.title + '" />' +
