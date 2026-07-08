@@ -8,7 +8,7 @@
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
   body {
-    background: #0f0f1a;
+    background: #0a0e1a;
     color: white;
     min-height: 100vh;
     display: flex;
@@ -17,7 +17,7 @@
     padding: 24px 16px;
   }
   .card {
-    background: #1a1a2e;
+    background: #10182b;
     border-radius: 20px;
     padding: 28px 22px;
     width: 100%;
@@ -26,21 +26,21 @@
   }
   .brand { text-align: center; margin-bottom: 20px; }
   .brand h1 { font-size: 26px; font-weight: 800; }
-  .brand h1 span { color: #6c5ce7; }
-  .brand p { color: #a0a0c0; font-size: 13px; margin-top: 4px; }
-  .tabs { display: flex; background: #0f0f1a; border-radius: 12px; padding: 4px; margin-bottom: 20px; }
-  .tab { flex: 1; text-align: center; padding: 10px; border-radius: 10px; font-size: 14px; font-weight: bold; color: #a0a0c0; cursor: pointer; }
-  .tab.active { background: #6c5ce7; color: white; }
+  .brand h1 span { color:#1e6bd6;}
+  .brand p { color: #7d8aa8; font-size: 13px; margin-top: 4px; }
+  .tabs { display: flex; background: #0a0e1a; border-radius: 12px; padding: 4px; margin-bottom: 20px; }
+  .tab { flex: 1; text-align: center; padding: 10px; border-radius: 10px; font-size: 14px; font-weight: bold; color: #7d8aa8; cursor: pointer; }
+  .tab.active { background: #1e6bd6; color: white; }
   .field { margin-bottom: 14px; }
-  .field label { font-size: 13px; color: #a0a0c0; display: block; margin-bottom: 6px; }
+  .field label { font-size: 13px; color: #7d8aa8; display: block; margin-bottom: 6px; }
   .field input {
-    width: 100%; padding: 13px 14px; background: #0f0f1a;
-    border: 1px solid #2a2a44; border-radius: 10px; color: white; font-size: 15px;
+    width: 100%; padding: 13px 14px; background:#0a0e1a;
+    border: 1px solid #24304a; border-radius: 10px; color: white; font-size: 15px;
   }
-  .field input:focus { outline: none; border-color: #6c5ce7; }
+  .field input:focus { outline: none; border-color: #1e6bd6; }
   .btn {
     width: 100%; padding: 14px; border: none; border-radius: 10px;
-    background: #6c5ce7; color: white; font-size: 15px; font-weight: bold;
+    background: #1e6bd6; color: white; font-size: 15px; font-weight: bold;
     margin-top: 8px; cursor: pointer;
   }
   .btn:active { opacity: 0.85; }
@@ -49,10 +49,10 @@
   .msg.success { color: #4ade80; }
   .hidden { display: none; }
   .bkash-box {
-    background: #0f0f1a; border: 1px solid #2a2a44; border-radius: 12px;
+    background: #0a0e1a; border: 1px solid #24304a; border-radius: 12px;
     padding: 18px; text-align: center; margin-bottom: 18px;
   }
-  .bkash-number { font-size: 22px; font-weight: 800; color: #6c5ce7; letter-spacing: 1px; margin: 8px 0; }
+  .bkash-number { font-size: 22px; font-weight: 800; color: #1e6bd6; letter-spacing: 1px; margin: 8px 0; }
   .warning-text {
     font-weight: 800; font-size: 14px; color: #ffb020;
     text-align: center; margin-bottom: 18px; line-height: 1.5;
@@ -60,14 +60,14 @@
   .status-box { text-align: center; padding: 30px 10px; }
   .status-box .icon { font-size: 44px; margin-bottom: 12px; }
   .status-box h2 { font-size: 17px; margin-bottom: 8px; }
-  .status-box p { color: #a0a0c0; font-size: 13px; }
+  .status-box p { color: #7d8aa8; font-size: 13px; }
 </style>
 </head>
 <body>
 
 <div class="card">
   <div class="brand">
-    <h1>Wave BD <span>Premium</span></h1>
+    <h1> Premium Video<span>Hub</span></h1>
     <p>ফেসবুক ভিডিও ও ইউটিউব ভিডিও ও টিউটোরিয়াল</p>
   </div>
 
@@ -110,7 +110,7 @@
     <div class="status-box">
       <div class="icon">⏳</div>
       <h2>আপনার পেমেন্ট পেন্ডিং এ আছে</h2>
-      <p>খুব শীঘ্রই এপ্রোভ করা হবে। অনুগ্রহ করে অপেক্ষা করুন।</p>
+      <p>খুব শীঘ্রই এপ্রোভ করা হবে। <br>অনুগ্রহ করে এডমিনের সাথে কথা বলে কনফার্ম করুন</p>
     </div>
   </div>
 
@@ -123,15 +123,7 @@
     <button class="btn" onclick="goToGallery()">গ্যালারি দেখুন 📚</button>
   </div>
 
-  <div id="expiredView" class="hidden">
-    <div class="status-box">
-      <div class="icon">⌛</div>
-      <h2>সাবস্ক্রিপশন মেয়াদ শেষ</h2>
-      <p>আপনার ৩০ দিনের প্রিমিয়াম মেয়াদ শেষ হয়ে গেছে। নতুন মাসের জন্য আবার পেমেন্ট করুন।</p>
-    </div>
-    <button class="btn" onclick="showView('paymentView')">আবার পেমেন্ট করুন</button>
-  </div>
-</div>
+ 
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
