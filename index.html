@@ -3,73 +3,290 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Freemathod Facebook YouTube service BD</title>
+<title>Wave BD Premium</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
   body {
     background: #0f0f1a;
     color: white;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: 20px;
+    align-items: flex-start;
+    padding: 24px 16px;
   }
   .card {
     background: #1a1a2e;
-    border-radius: 16px;
-    padding: 30px 24px;
+    border-radius: 20px;
+    padding: 28px 22px;
     width: 100%;
-    max-width: 400px;
-    text-align: center;
+    max-width: 420px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
   }
-  h1 {
-    font-size: 24px;
-    margin-bottom: 8px;
+  .brand { text-align: center; margin-bottom: 20px; }
+  .brand h1 { font-size: 26px; font-weight: 800; }
+  .brand h1 span { color: #6c5ce7; }
+  .brand p { color: #a0a0c0; font-size: 13px; margin-top: 4px; }
+  .tabs { display: flex; background: #0f0f1a; border-radius: 12px; padding: 4px; margin-bottom: 20px; }
+  .tab { flex: 1; text-align: center; padding: 10px; border-radius: 10px; font-size: 14px; font-weight: bold; color: #a0a0c0; cursor: pointer; }
+  .tab.active { background: #6c5ce7; color: white; }
+  .field { margin-bottom: 14px; }
+  .field label { font-size: 13px; color: #a0a0c0; display: block; margin-bottom: 6px; }
+  .field input {
+    width: 100%; padding: 13px 14px; background: #0f0f1a;
+    border: 1px solid #2a2a44; border-radius: 10px; color: white; font-size: 15px;
   }
-  .subtitle {
-    color: #a0a0c0;
-    font-size: 14px;
-    margin-bottom: 24px;
-  }
+  .field input:focus { outline: none; border-color: #6c5ce7; }
   .btn {
-    width: 100%;
-    padding: 14px;
-    border: none;
-    border-radius: 10px;
-    background: #6c5ce7;
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-    margin-top: 12px;
-    cursor: pointer;
+    width: 100%; padding: 14px; border: none; border-radius: 10px;
+    background: #6c5ce7; color: white; font-size: 15px; font-weight: bold;
+    margin-top: 8px; cursor: pointer;
   }
-  .status {
-    margin-top: 20px;
-    font-size: 13px;
-    color: #a0a0c0;
+  .btn:active { opacity: 0.85; }
+  .msg { text-align: center; font-size: 13px; margin-top: 14px; min-height: 18px; }
+  .msg.error { color: #ff6b6b; }
+  .msg.success { color: #4ade80; }
+  .hidden { display: none; }
+  .bkash-box {
+    background: #0f0f1a; border: 1px solid #2a2a44; border-radius: 12px;
+    padding: 18px; text-align: center; margin-bottom: 18px;
   }
+  .bkash-number { font-size: 22px; font-weight: 800; color: #6c5ce7; letter-spacing: 1px; margin: 8px 0; }
+  .warning-text {
+    font-weight: 800; font-size: 14px; color: #ffb020;
+    text-align: center; margin-bottom: 18px; line-height: 1.5;
+  }
+  .status-box { text-align: center; padding: 30px 10px; }
+  .status-box .icon { font-size: 44px; margin-bottom: 12px; }
+  .status-box h2 { font-size: 17px; margin-bottom: 8px; }
+  .status-box p { color: #a0a0c0; font-size: 13px; }
 </style>
 </head>
 <body>
 
 <div class="card">
-  <h1>Freemathod Facebook YouTube service BD</h1>
-  <p class="subtitle">ফেসবুক ও ইউটিউব কপিরাইট ফ্রি ভিডিও তৈরি ও ফ্রি ভিডিও </p>
-  
-  <button class="btn" onclick="enrollNow()">Enroll Now </button>
-  
-  <p class="status" id="statusText">পেইজ সফলভাবে লোড হয়েছে ✅</p>
+  <div class="brand">
+    <h1>Wave BD <span>Premium</span></h1>
+    <p>ফেসবুক মার্কেটিং ও ইউটিউব কোর্স</p>
+  </div>
+
+  <div id="authView">
+    <div class="tabs">
+      <div class="tab active" id="loginTab" onclick="switchTab('login')">Login</div>
+      <div class="tab" id="registerTab" onclick="switchTab('register')">Register</div>
+    </div>
+    <div class="field">
+      <label>Username</label>
+      <input type="text" id="username" placeholder="your username" autocomplete="off">
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="password" placeholder="••••••••">
+    </div>
+    <button class="btn" id="authBtn" onclick="handleAuth()">Login</button>
+    <p class="msg" id="authMsg"></p>
+  </div>
+
+  <div id="paymentView" class="hidden">
+    <div class="status-box" style="padding-top:0;">
+      <div class="icon">💳</div>
+      <h2>Premium Feature Active করুন</h2>
+    </div>
+    <div class="bkash-box">
+      <p style="color:#a0a0c0; font-size:13px;">bKash নাম্বারে টাকা পাঠান</p>
+      <div class="bkash-number">016********8</div>
+    </div>
+    <p class="warning-text">Send Money করুন,<br>সেন্ড মানি ব্যতিত পেমেন্ট গ্রহণযোগ্য নয়</p>
+    <div class="field">
+      <label>Transaction ID</label>
+      <input type="text" id="txnId" placeholder="Transaction ID লিখুন" autocomplete="off">
+    </div>
+    <button class="btn" onclick="submitPayment()">Submit করুন</button>
+    <p class="msg" id="paymentMsg"></p>
+  </div>
+
+  <div id="pendingView" class="hidden">
+    <div class="status-box">
+      <div class="icon">⏳</div>
+      <h2>আপনার পেমেন্ট পেন্ডিং এ আছে</h2>
+      <p>খুব শীঘ্রই এপ্রোভ করা হবে। অনুগ্রহ করে অপেক্ষা করুন।</p>
+    </div>
+  </div>
+
+  <div id="activeView" class="hidden">
+    <div class="status-box">
+      <div class="icon">✅</div>
+      <h2>Access Granted!</h2>
+      <p id="activeSubText">আপনার প্রিমিয়াম একাউন্ট সক্রিয়</p>
+    </div>
+    <button class="btn" onclick="goToGallery()">গ্যালারি দেখুন 📚</button>
+  </div>
+
+  <div id="expiredView" class="hidden">
+    <div class="status-box">
+      <div class="icon">⌛</div>
+      <h2>সাবস্ক্রিপশন মেয়াদ শেষ</h2>
+      <p>আপনার ৩০ দিনের প্রিমিয়াম মেয়াদ শেষ হয়ে গেছে। নতুন মাসের জন্য আবার পেমেন্ট করুন।</p>
+    </div>
+    <button class="btn" onclick="showView('paymentView')">আবার পেমেন্ট করুন</button>
+  </div>
 </div>
 
-<script>
-  const tg = window.Telegram.WebApp;
-  tg.ready();
-  tg.expand();
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  function enrollNow() {
-    document.getElementById('statusText').innerText = 'পরবর্তী ধাপ শীঘ্রই যুক্ত হবে...';
+  const firebaseConfig = {
+    apiKey: "AIzaSyBL1UNjemUQERSmF_G8_nmxjNnUYQqKPsU",
+    authDomain: "freemathod-fb-yt-service-bd.firebaseapp.com",
+    projectId: "freemathod-fb-yt-service-bd",
+    storageBucket: "freemathod-fb-yt-service-bd.firebasestorage.app",
+    messagingSenderId: "1029948659030",
+    appId: "1:1029948659030:web:bd901848b2593add4272f7"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  let mode = "login";
+  let currentUsername = "";
+
+  async function hashPassword(password) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+  }
+
+  function sanitizeUsername(username) {
+    return username.trim().toLowerCase().replace(/[^a-z0-9_]/g, "");
+  }
+
+  window.switchTab = function(tab) {
+    mode = tab;
+    document.getElementById("loginTab").classList.toggle("active", tab === "login");
+    document.getElementById("registerTab").classList.toggle("active", tab === "register");
+    document.getElementById("authBtn").innerText = tab === "login" ? "Login" : "Register";
+    document.getElementById("authMsg").innerText = "";
+  };
+
+  function showMsg(elementId, text, type) {
+    const el = document.getElementById(elementId);
+    el.innerText = text;
+    el.className = "msg " + type;
+  }
+
+  function showView(viewId) {
+    ["authView", "paymentView", "pendingView", "activeView", "expiredView"].forEach(id => {
+      document.getElementById(id).classList.toggle("hidden", id !== viewId);
+    });
+  }
+  window.showView = showView;
+
+  window.handleAuth = async function() {
+    const rawUsername = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+    const username = sanitizeUsername(rawUsername);
+
+    if (!username || !password) {
+      showMsg("authMsg", "ইউজারনেম ও পাসওয়ার্ড দিন", "error");
+      return;
+    }
+
+    const userRef = doc(db, "premium_users", username);
+    const userSnap = await getDoc(userRef);
+
+    if (mode === "register") {
+      if (userSnap.exists()) {
+        showMsg("authMsg", "এই ইউজারনেম আগে থেকেই আছে, Login করুন", "error");
+        return;
+      }
+      const passwordHash = await hashPassword(password);
+      await setDoc(userRef, {
+        password_hash: passwordHash,
+        status: "unpaid",
+        created_at: new Date().toISOString()
+      });
+      currentUsername = username;
+      showView("paymentView");
+      return;
+    }
+
+    if (!userSnap.exists()) {
+      showMsg("authMsg", "একাউন্ট পাওয়া যায়নি, Register করুন", "error");
+      return;
+    }
+
+    const userData = userSnap.data();
+    const passwordHash = await hashPassword(password);
+
+    if (userData.password_hash !== passwordHash) {
+      showMsg("authMsg", "❌ Invalid Password", "error");
+      return;
+    }
+
+    currentUsername = username;
+
+    if (userData.status === "active") {
+      await handleActiveStatus(userRef, userData);
+    } else if (userData.status === "pending") {
+      showView("pendingView");
+    } else {
+      showView("paymentView");
+    }
+  };
+
+  async function handleActiveStatus(userRef, userData) {
+    const now = new Date();
+
+    if (!userData.expires_at) {
+      const expiresDate = new Date();
+      expiresDate.setDate(expiresDate.getDate() + 30);
+      await updateDoc(userRef, { expires_at: expiresDate });
+      document.getElementById("activeSubText").innerText = "আপনার প্রিমিয়াম একাউন্ট সক্রিয় (বাকি ৩০ দিন)";
+      showView("activeView");
+      return;
+    }
+
+    const expiresDate = userData.expires_at.toDate();
+
+    if (now >= expiresDate) {
+      showView("expiredView");
+      return;
+    }
+
+    const daysLeft = Math.ceil((expiresDate - now) / (1000 * 60 * 60 * 24));
+    document.getElementById("activeSubText").innerText = "আপনার প্রিমিয়াম একাউন্ট সক্রিয় (বাকি " + daysLeft + " দিন)";
+    showView("activeView");
+  }
+
+  window.submitPayment = async function() {
+    const txnId = document.getElementById("txnId").value.trim();
+    if (!txnId) {
+      showMsg("paymentMsg", "Transaction ID লিখুন", "error");
+      return;
+    }
+
+    const userRef = doc(db, "premium_users", currentUsername);
+    await updateDoc(userRef, {
+      status: "pending",
+      transaction_id: txnId,
+      submitted_at: new Date().toISOString(),
+      expires_at: null
+    });
+
+    showView("pendingView");
+  };
+
+  window.goToGallery = function() {
+    window.location.href = "premium_gallery.html?user=" + encodeURIComponent(currentUsername);
+  };
+
+  if (window.Telegram && window.Telegram.WebApp) {
+    window.Telegram.WebApp.ready();
+    window.Telegram.WebApp.expand();
   }
 </script>
 
