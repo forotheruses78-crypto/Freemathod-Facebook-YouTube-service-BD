@@ -184,6 +184,33 @@
     }
     window.showTab = showTab;
 
+    let countdownTimer = null;
+
+    function startCountdown(expiresDate) {
+      function tick() {
+        const now = new Date();
+        const diff = expiresDate - now;
+
+        if (diff <= 0) {
+          clearInterval(countdownTimer);
+          document.getElementById('subBadge').innerHTML =
+            '<div class="sub-badge">⌛ Premium মেয়াদ শেষ হয়ে গেছে</div>';
+          return;
+        }
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((diff / (1000 * 60)) % 60);
+
+        document.getElementById('subBadge').innerHTML =
+          '<div class="sub-badge">⏳ Premium সক্রিয় — বাকি ' +
+          days + 'দিন ' + hours + 'ঘণ্টা ' + minutes + 'মিনিট</div>';
+      }
+
+      tick();
+      countdownTimer = setInterval(tick, 1000 * 60);
+    }
+
     async function loadSubscriptionBadge() {
       const params = new URLSearchParams(window.location.search);
       const username = params.get('user');
@@ -196,11 +223,8 @@
       const userData = userSnap.data();
       if (userData.status === "active" && userData.expires_at) {
         const expiresDate = userData.expires_at.toDate();
-        const now = new Date();
-        const daysLeft = Math.ceil((expiresDate - now) / (1000 * 60 * 60 * 24));
-        if (daysLeft > 0) {
-          document.getElementById('subBadge').innerHTML =
-            '<div class="sub-badge">⏳ Premium সক্রিয় — বাকি ' + daysLeft + ' দিন</div>';
+        if (expiresDate > new Date()) {
+          startCountdown(expiresDate);
         }
       }
     }
