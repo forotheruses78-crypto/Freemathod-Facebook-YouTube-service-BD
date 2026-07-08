@@ -3,72 +3,174 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title> Premium Video Gallery</title>
+<title>Premium Video Hub</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
-    background: #0a0e1a;
-    color: white;
+    font-family: 'Inter', Arial, sans-serif;
+    background:
+      radial-gradient(circle at 50% -10%, rgba(77,166,255,0.18), transparent 55%),
+      radial-gradient(circle at 90% 10%, rgba(30,107,214,0.12), transparent 45%),
+      #060b16;
+    color: #eef2f9;
     min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    padding: 24px 16px;
+    padding: 32px 16px;
   }
+
   .card {
-    background: #10182b;
-    border-radius: 20px;
-    padding: 28px 22px;
+    position: relative;
+    background: linear-gradient(180deg, #0d1526 0%, #0a111f 100%);
+    border: 1px solid rgba(77,166,255,0.18);
+    border-radius: 22px;
+    padding: 32px 24px;
     width: 100%;
     max-width: 420px;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.02) inset,
+      0 20px 60px rgba(0,0,0,0.55),
+      0 0 40px rgba(30,107,214,0.08);
   }
-  .brand { text-align: center; margin-bottom: 20px; }
-  .brand h1 { font-size: 26px; font-weight: 800; }
-  .brand h1 span { color: #1e6bd6; }
-  .brand p { color: #7d8aa8; font-size: 13px; margin-top: 4px; }
-  .tabs { display: flex; background: #0a0e1a; border-radius: 12px; padding: 4px; margin-bottom: 20px; }
-  .tab { flex: 1; text-align: center; padding: 10px; border-radius: 10px; font-size: 14px; font-weight: bold; color: #7d8aa8; cursor: pointer; }
-  .tab.active { background: #1e6bd6; color: white; }
-  .field { margin-bottom: 14px; }
-  .field label { font-size: 13px; color: #7d8aa8; display: block; margin-bottom: 6px; }
+
+  .card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 16px; right: 16px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(77,166,255,0.6), transparent);
+  }
+
+  .brand { text-align: center; margin-bottom: 26px; }
+  .brand .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(77,166,255,0.1);
+    border: 1px solid rgba(77,166,255,0.3);
+    color: #7fc4ff;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+  }
+  .brand h1 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 27px;
+    font-weight: 700;
+    color: #f2f6fc;
+    letter-spacing: -0.01em;
+  }
+  .brand h1 span {
+    background: linear-gradient(90deg, #7fc4ff, #4da6ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 800;
+  }
+  .brand p { color: #7d8aa8; font-size: 13px; margin-top: 6px; }
+
+  .tabs {
+    display: flex;
+    background: #060b16;
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 4px;
+    margin-bottom: 22px;
+  }
+  .tab {
+    flex: 1; text-align: center; padding: 10px;
+    border-radius: 9px; font-size: 14px; font-weight: 600;
+    color: #7d8aa8; cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .tab.active {
+    background: linear-gradient(135deg, #2a7de8, #1e6bd6);
+    color: white;
+    box-shadow: 0 4px 14px rgba(30,107,214,0.4);
+  }
+
+  .field { margin-bottom: 15px; }
+  .field label {
+    font-size: 12px; font-weight: 600; color: #8895ab;
+    display: block; margin-bottom: 7px;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
   .field input {
-    width: 100%; padding: 13px 14px; background: #0a0e1a;
-    border: 1px solid #24304a; border-radius: 10px; color: white; font-size: 15px;
+    width: 100%; padding: 13px 14px;
+    background: #060b16;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px; color: white; font-size: 15px;
+    transition: border-color 0.2s ease;
   }
-  .field input:focus { outline: none; border-color: #1e6bd6; }
+  .field input::placeholder { color: #4a5670; }
+  .field input:focus { outline: none; border-color: #4da6ff; box-shadow: 0 0 0 3px rgba(77,166,255,0.12); }
+
   .btn {
     width: 100%; padding: 14px; border: none; border-radius: 10px;
-    background: #1e6bd6; color: white; font-size: 15px; font-weight: bold;
-    margin-top: 8px; cursor: pointer;
+    background: linear-gradient(135deg, #2a7de8, #1e6bd6);
+    color: white; font-size: 15px; font-weight: 700;
+    margin-top: 6px; cursor: pointer;
+    box-shadow: 0 6px 18px rgba(30,107,214,0.35);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
-  .btn:active { opacity: 0.85; }
-  .msg { text-align: center; font-size: 13px; margin-top: 14px; min-height: 18px; }
+  .btn:active { transform: scale(0.98); box-shadow: 0 3px 10px rgba(30,107,214,0.3); }
+
+  .msg { text-align: center; font-size: 13px; margin-top: 14px; min-height: 18px; font-weight: 500; }
   .msg.error { color: #ff6b6b; }
   .msg.success { color: #4ade80; }
   .hidden { display: none; }
+
   .bkash-box {
-    background: #0a0e1a; border: 1px solid #24304a; border-radius: 12px;
-    padding: 18px; text-align: center; margin-bottom: 18px;
+    background: #060b16;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 20px; text-align: center; margin-bottom: 18px;
+    position: relative; overflow: hidden;
   }
-  .bkash-number { font-size: 22px; font-weight: 800; color: #1e6bd6; letter-spacing: 1px; margin: 8px 0; }
+  .bkash-box::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(77,166,255,0.1), transparent 70%);
+  }
+  .bkash-box p { color: #7d8aa8; font-size: 13px; position: relative; }
+  .bkash-number {
+    font-family: 'Outfit', sans-serif;
+    font-size: 24px; font-weight: 800; color: #7fc4ff;
+    letter-spacing: 1.5px; margin: 10px 0; position: relative;
+  }
+
   .warning-text {
-    font-weight: 800; font-size: 14px; color: #ffb020;
-    text-align: center; margin-bottom: 18px; line-height: 1.5;
+    font-weight: 700; font-size: 13px; color: #ffb020;
+    text-align: center; margin-bottom: 18px; line-height: 1.6;
+    background: rgba(255,176,32,0.08);
+    border: 1px solid rgba(255,176,32,0.2);
+    border-radius: 10px; padding: 10px 14px;
   }
-  .status-box { text-align: center; padding: 30px 10px; }
-  .status-box .icon { font-size: 44px; margin-bottom: 12px; }
-  .status-box h2 { font-size: 17px; margin-bottom: 8px; }
-  .status-box p { color: #7d8aa8; font-size: 13px; }
+
+  .status-box { text-align: center; padding: 34px 10px 10px; }
+  .status-box .icon {
+    font-size: 46px; margin-bottom: 14px;
+    filter: drop-shadow(0 0 14px rgba(77,166,255,0.35));
+  }
+  .status-box h2 { font-family: 'Outfit', sans-serif; font-size: 18px; margin-bottom: 8px; color: #f2f6fc; }
+  .status-box p { color: #7d8aa8; font-size: 13px; line-height: 1.5; }
 </style>
 </head>
 <body>
 
 <div class="card">
   <div class="brand">
+    <span class="badge">✨ Members Only</span>
     <h1>Premium <span>Video Hub</span></h1>
-    <p>ফেসবুক ভিডিও ও ইউটিউব ভিডিও ও টিউটোরিয়াল</p>
+    <p>ফেসবুক ভিডিও, ইউটিউব ভিডিও ও টিউটোরিয়াল</p>
   </div>
 
   <div id="authView">
@@ -94,7 +196,7 @@
       <h2>Premium Feature Active করুন</h2>
     </div>
     <div class="bkash-box">
-      <p style="color:#7d8aa8; font-size:13px;">bKash নাম্বারে টাকা পাঠান</p>
+      <p>bKash নাম্বারে টাকা পাঠান</p>
       <div class="bkash-number">016********8</div>
     </div>
     <p class="warning-text">Send Money করুন,<br>সেন্ড মানি ব্যতিত পেমেন্ট গ্রহণযোগ্য নয়</p>
