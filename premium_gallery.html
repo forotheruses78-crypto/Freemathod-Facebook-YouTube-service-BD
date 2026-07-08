@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>প্রিমিয়াম ভিডিও গ্যালারি</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+  body { background: #0f0f1a; color: white; padding: 16px; }
+  h1 { font-size: 20px; margin-bottom: 12px; text-align: center; }
+  .sub-badge {
+    display: block;
+    text-align: center;
+    background: #1a1a2e;
+    border: 1px solid #2a2a44;
+    border-radius: 20px;
+    padding: 8px 14px;
+    font-size: 12px;
+    color: #4ade80;
+    margin: 0 auto 16px auto;
+    width: fit-content;
+  }
+  .tabs { display: flex; gap: 6px; margin-bottom: 16px; overflow-x: auto; }
+  .tab-btn {
+    flex-shrink: 0; padding: 10px 14px; background: #1a1a2e; color: #a0a0c0;
+    border: none; border-radius: 8px; font-size: 13px; font-weight: bold;
+    cursor: pointer; white-space: nowrap;
+  }
+  .tab-btn.active { background: #6c5ce7; color: white; }
+  .video-card { background: #1a1a2e; border-radius: 12px; overflow: hidden; margin-bottom: 16px; }
+  .thumb-wrap { position: relative; }
+  .thumb-wrap img { width: 100%; display: block; pointer-events: none; }
+  .time-badge {
+    position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.75);
+    color: white; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold;
+  }
+  .video-card h3 { padding: 12px; font-size: 15px; }
+  .download-btn {
+    display: block; width: 100%; text-align: center; background: #6c5ce7;
+    color: white; text-decoration: none; padding: 12px; font-weight: bold;
+    border: none; font-size: 15px; cursor: pointer;
+  }
+  .empty { text-align: center; color: #a0a0c0; margin-top: 40px; }
+</style>
+</head>
+<body>
+  <h1>📚 প্রিমিয়াম ভিডিও গ্যালারি</h1>
+  <div id="subBadge"></div>
+
+  <div class="tabs">
+    <button class="tab-btn active" id="tab-all" onclick="showTab('all')">সব</button>
+    <button class="tab-btn" id="tab-fb_video" onclick="showTab('fb_video')">ফেসবুক ভিডিও</button>
+    <button class="tab-btn" id="tab-yt_shorts" onclick="showTab('yt_shorts')">ইউটিউব শর্টস</button>
+    <button class="tab-btn" id="tab-yt_long" onclick="showTab('yt_long')">ইউটিউব লং</button>
+    <button class="tab-btn" id="tab-tutorial" onclick="showTab('tutorial')">টিউটোরিয়াল</button>
+  </div>
+
+  <div id="gallery">লোড হচ্ছে...</div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, query, orderBy, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBL1UNjemUQERSmF_G8_nmxjNnUYQqKPsU",
+      authDomain: "freemathod-fb-yt-service-bd.firebaseapp.com",
+      projectId: "freemathod-fb-yt-service-bd",
+      storageBucket: "freemathod-fb-yt-service-bd.firebasestorage.app",
+      messagingSenderId: "1029948659030",
+      appId: "1:1029948659030:web:bd901848b2593add4272f7"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const DELIVERY_BOT_USERNAME = "freemethodvideodelivery_bot";
+
+    let allVideos = [];
+    let currentTab = "all";
+
+    function openDeliveryBot(videoCode) {
+      const link = "https://t.me/" + DELIVERY_BOT_USERNAME + "?start=" + videoCode;
+      if (window.Telegram && window.Telegram.WebApp) {
+        window.Telegram.WebApp.openTelegramLink(link);
+      } else {
+        window.open(link, "_blank");
+      }
+    }
+    window.openDeliveryBot = openDeliveryBot;
+
+    function renderVideoCard(data) {
+      const badgeText = data.time_label === "night" ? "🌙 রাত" : "☀️ দিন";
+      return '<div class="video-card">' +
+               '<div class="thumb-wrap">' +
+                 '<img src="' + data.thumbnail_url + '" alt="' + data.title + '" />' +
+                 '<span class="time-badge">' + badgeText + '</span>' +
+               '</div>' +
+               '<h3>' + data.title + '</h3>' +
+               '<button class="download-btn" onclick="openDeliveryBot(\'' + data.video_code + '\')">⬇ Download</button>' +
+             '</div>';
+    }
+
+    function renderTab(tab) {
+      const container = document.getElementById('gallery');
+      let list = tab === 'all' ? allVideos : allVideos.filter(v => v.category === tab);
+
+      if (list.length === 0) {
+        container.innerHTML = '<p class="empty">এই বিভাগে এখনো কোনো ভিডিও নেই।</p>';
+        return;
+      }
+
+      let html = '';
+      list.forEach((data) => { html += renderVideoCard(data); });
+      container.innerHTML = html;
+    }
+
+    function showTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById('tab-' + tab).classList.add('active');
+      renderTab(tab);
+    }
+    window.showTab = showTab;
+
+    async function loadSubscriptionBadge() {
+      const params = new URLSearchParams(window.location.search);
+      const username = params.get('user');
+      if (!username) return;
+
+      const userRef = doc(db, "premium_users", username);
+      const userSnap = await getDoc(userRef);
+      if (!userSnap.exists()) return;
+
+      const userData = userSnap.data();
+      if (userData.status === "active" && userData.expires_at) {
+        const expiresDate = userData.expires_at.toDate();
+        const now = new Date();
+        const daysLeft = Math.ceil((expiresDate - now) / (1000 * 60 * 60 * 24));
+        if (daysLeft > 0) {
+          document.getElementById('subBadge').innerHTML =
+            '<div class="sub-badge">⏳ Premium সক্রিয় — বাকি ' + daysLeft + ' দিন</div>';
+        }
+      }
+    }
+
+    async function loadVideos() {
+      const videosQuery = query(collection(db, "premium_videos"), orderBy("created_at", "desc"));
+      const querySnapshot = await getDocs(videosQuery);
+
+      if (querySnapshot.empty) {
+        document.getElementById('gallery').innerHTML = '<p class="empty">এখনো কোনো প্রিমিয়াম ভিডিও যোগ করা হয়নি।</p>';
+        return;
+      }
+
+      querySnapshot.forEach((doc) => {
+        allVideos.push(doc.data());
+      });
+
+      renderTab(currentTab);
+    }
+
+    window.onload = function() {
+      loadVideos();
+      loadSubscriptionBadge();
+    };
+
+    if (window.Telegram && window.Telegram.WebApp) {
+      window.Telegram.WebApp.ready();
+      window.Telegram.WebApp.expand();
+    }
+  </script>
+</body>
+</html>
